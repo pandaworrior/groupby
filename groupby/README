@@ -17,6 +17,10 @@ the same length as well.
 that the size of all keys is smaller than the memory size. Thus,
 we can cache all keys in the memory.
 
-b) Compile
+b) Output assumption:
+In the output, we allow duplicated values for a key, and we will
+not sort value strings.
 
-c) Run with parameters
+c) Compile
+
+d) Run with parameters

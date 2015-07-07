@@ -1,0 +1,12 @@
+
+<!--
+  This file is used to configure the various parameters relevant to groupby operator
+  By Cheng
+  maxSizePerFile is in size of MB.
+-->
+
+<SETTING>
+	<input lenOfKeyStr="5" lenOfValueStr="6"/>
+	<output valueFileDirStr="/var/tmp" valueFilePrefix="value_" maxSizePerFile="2"/>
+	<mem maxPerMemUsage="0.8" batchSizeTriggerMemCheck="1000"/>
+</SETTING>
