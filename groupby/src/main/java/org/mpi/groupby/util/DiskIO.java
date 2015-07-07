@@ -178,6 +178,10 @@ public class DiskIO {
 		
 		//compute how many values at most for each file to store
 		MAX_NUM_VALUE_PER_FILE = (MAX_SIZE_PER_FILE * 1024 * 1024)/LEN_OF_VALUE;
+		
+		if(Debug.debug){
+			printOut();
+		}
 	}
 	
 	/**
@@ -217,15 +221,16 @@ public class DiskIO {
 	 */
 	public static void printOut(){
 		StringBuilder strB = new StringBuilder();
+		strB.append("--------------> Config File Output <-------------------\n");
 		strB.append(LEN_OF_KEY_STR + " " + LEN_OF_KEY + "\n");
 		strB.append(LEN_OF_VALUE_STR + " " + LEN_OF_VALUE + "\n");
 		strB.append(MAX_PER_MEMORY_USAGE_STR + " " + MAX_PER_MEMORY_USAGE + "\n");
 		strB.append(BATCH_SIZE_TRIGGER_MEM_CHECK_STR + " " + BATCH_SIZE_TRIGGER_MEM_CHECK + "\n");
 		strB.append(VALUE_FILE_DIR_STR + " " + VALUE_FILE_DIR + "\n");
 		strB.append(VALUE_FILE_PREFIX_STR + " " + VALUE_FILE_PREFIX + "\n");
-		strB.append(MAX_SIZE_PER_FILE_STR + " " + MAX_SIZE_PER_FILE + "\n");
+		strB.append(MAX_SIZE_PER_FILE_STR + " " + MAX_SIZE_PER_FILE + " MB\n");
 		strB.append(MAX_NUM_VALUE_PER_FILE_STR + " " + MAX_NUM_VALUE_PER_FILE + "\n");
-		
+		strB.append("--------------> Config File Output <-------------------");
 		System.out.println(strB.toString());
 	}
 	

@@ -6,7 +6,7 @@
 -->
 
 <SETTING>
-	<input lenOfKeyStr="5" lenOfValueStr="6"/>
+	<input lenOfKeyStr="10" lenOfValueStr="20"/>
 	<output valueFileDirStr="/var/tmp" valueFilePrefix="value_" maxSizePerFile="2"/>
 	<mem maxPerMemUsage="0.8" batchSizeTriggerMemCheck="1000"/>
 </SETTING>

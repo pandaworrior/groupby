@@ -23,7 +23,7 @@ package org.mpi.groupby.util;
 public class Debug {
 
 	/** The debug. */
-	public static boolean debug = false;
+	public static boolean debug = true;
 
 	/** The profile. */
 	public static boolean profile = false;

@@ -50,6 +50,8 @@ public class TrieIterator implements Iterator<Map.Entry<String, List<String>>>{
     public TrieIterator(Trie t){
     	this.setTrieStore(t);
     	this.setIndexOfKey(0);
+    	this.setStartNode(t.getStartOfIterator());
+    	this.setCurrNode(t.getStartOfIterator());
     }
 
 	/**
@@ -59,7 +61,7 @@ public class TrieIterator implements Iterator<Map.Entry<String, List<String>>>{
 	 */
 	@Override
 	public boolean hasNext() {
-		return (trieStore.getNumOfKeys() == indexOfKey);
+		return (indexOfKey < trieStore.getNumOfKeys());
 	}
 
 	/**
@@ -77,6 +79,7 @@ public class TrieIterator implements Iterator<Map.Entry<String, List<String>>>{
 				DiskIO.reloadFromDisk(returnNode);
 			}
 			this.currNode = this.currNode.getNextTrieNode();
+			indexOfKey++;
 			return new AbstractMap.SimpleEntry<String, List<String>>(returnNode.getKeyStr(), returnNode.getValueList());
 		}
 		return null;
@@ -125,6 +128,22 @@ public class TrieIterator implements Iterator<Map.Entry<String, List<String>>>{
 	 */
 	public void setIndexOfKey(int indexOfKey) {
 		this.indexOfKey = indexOfKey;
+	}
+
+	public TrieNode getStartNode() {
+		return startNode;
+	}
+
+	public void setStartNode(TrieNode startNode) {
+		this.startNode = startNode;
+	}
+
+	public TrieNode getCurrNode() {
+		return currNode;
+	}
+
+	public void setCurrNode(TrieNode currNode) {
+		this.currNode = currNode;
 	}
 
 }

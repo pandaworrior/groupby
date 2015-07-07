@@ -1,0 +1,16 @@
+aaaaaaaaaa abbbbbbbbbbbbbbbbbbb
+abaaaaaaaa babbbbbbbbbbbbbbbbbb
+aabaaaaaaa bbabbbbbbbbbbbbbbbbb
+aaabaaaaaa bbbabbbbbbbbbbbbbbbb
+aaaabaaaaa bbbbabbbbbbbbbbbbbbb
+aaaaabaaaa bbbbbabbbbbbbbbbbbbb
+aaaaaabaaa bbbbbbabbbbbbbbbbbbb
+aaaaaaabaa bbbbbbbabbbbbbbbbbbb
+abaaaaaaaa aabbbbbbbbbbbbbbbbbb
+abbaaaaaaa baabbbbbbbbbbbbbbbbb
+aabbaaaaaa bbaabbbbbbbbbbbbbbbb
+aaabbaaaaa bbbaabbbbbbbbbbbbbbb
+aaaabbaaaa bbbbaabbbbbbbbbbbbbb
+aaaaabbaaa bbbbbaabbbbbbbbbbbbb
+aaaaaabbaa bbbbbbaabbbbbbbbbbbb
+aaaaaaabba bbbbbbbaabbbbbbbbbbb
