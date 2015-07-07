@@ -1,0 +1,22 @@
+Please read this file by running the program. This file
+is organized in three parts:
+
+a) Input assumptions
+-> An input data file must follow the below format
+aaaaaa bbbbbb
+cccccc dddddd
+......
+The first element of every row is the key for that row, while
+the second element is the value of that row.
+All keys share the same length, and all values share
+the same length as well.
+
+-> Every key or value only contains lowercase ASCII characters.
+
+-> Although the data can be larger than the memory size, we assume
+that the size of all keys is smaller than the memory size. Thus,
+we can cache all keys in the memory.
+
+b) Compile
+
+c) Run with parameters
