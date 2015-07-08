@@ -99,7 +99,7 @@ public class GroupByFactory {
 		String dataFileName = args[0];
 		String configFileName = args[1];
 		
-		Debug.printf("You run the program with %s, %s", dataFileName, configFileName);
+		Debug.printf("You run the program with %s, %s\n", dataFileName, configFileName);
 		
 		DiskIO.setUpByReadingFile(configFileName);
 		

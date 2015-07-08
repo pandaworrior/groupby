@@ -10,7 +10,7 @@ public class TrieNodeTest {
 	@Test
 	@Category(org.mpi.groupby.datastructures.TrieNode.class)
 	public void testSetKeyValue(){
-		TrieNode tN = new TrieNode('a', Role.LEAF);
+		TrieNode tN = new TrieNode('a', Role.LEAF, null);
 		
 		boolean thrown = false;
 		try{
@@ -25,7 +25,7 @@ public class TrieNodeTest {
 	@Test
 	@Category(org.mpi.groupby.datastructures.TrieNode.class)
 	public void testSetKeyValueInternal(){
-		TrieNode tN = new TrieNode('a', Role.INTERNAL);
+		TrieNode tN = new TrieNode('a', Role.INTERNAL, null);
 		
 		boolean thrown = false;
 		try{

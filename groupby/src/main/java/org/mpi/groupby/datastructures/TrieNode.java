@@ -20,8 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.mpi.groupby.util.DiskIO;
+import org.mpi.groupby.util.FlushStatus;
 import org.mpi.groupby.util.Role;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class TrieNode.
  */
@@ -57,16 +59,25 @@ public class TrieNode {
     /** The offset in the data file. */
     private int offsetInDFile;
     
+    /** The flush status. */
+    private FlushStatus flushStatus;
+    
+    /** The my trie instance. */
+    private Trie myTrieInstance;
+    
     /**
      * Instantiates a new trie node.
      *
      * @param c the c
      * @param r the r
+     * @param trieIns the trie ins
      */
-    public TrieNode(char c, Role r){
+    public TrieNode(char c, Role r, Trie trieIns){
     	this.setMyChar(c);
     	this.setMyRole(r);
     	this.setChildren(new TrieNode[26]);
+    	this.setFlushStatus(FlushStatus.NOTFLUSHED);
+    	this.setMyTrieInstance(trieIns);
     }
 
 	/**
@@ -290,7 +301,7 @@ public class TrieNode {
 	 * @return true, if is on disk
 	 */
 	public boolean isOnDisk(){
-		return (this.numOfValues > this.getValueList().size());
+		return (this.getFlushStatus() == FlushStatus.FLUSHED);
 	}
 
 	/**
@@ -312,6 +323,72 @@ public class TrieNode {
 			throw new RuntimeException("Not leaf node");
 		}
 		this.keyStr = keyStr;
+	}
+
+	/**
+	 * Gets the flush status.
+	 *
+	 * @return the flush status
+	 */
+	public FlushStatus getFlushStatus() {
+		return flushStatus;
+	}
+
+	/**
+	 * Sets the flush status.
+	 *
+	 * @param flushStatus the new flush status
+	 */
+	private void setFlushStatus(FlushStatus flushStatus) {
+		this.flushStatus = flushStatus;
+	}
+	
+	/**
+	 * Not flushed.
+	 *
+	 * @return true, if successful
+	 */
+	public boolean notFlushed(){
+		return (this.getFlushStatus() == FlushStatus.NOTFLUSHED);
+	}
+	
+	/**
+	 * Wait for flushing.
+	 */
+	public void waitForFlushing(){
+		this.setFlushStatus(FlushStatus.ONFLUSHLIST);
+	}
+	
+	/**
+	 * Sets the to be flushed.
+	 */
+	public void setToBeFlushed(){
+		this.setFlushStatus(FlushStatus.FLUSHED);
+	}
+	
+	/**
+	 * Bring back to memory.
+	 */
+	public void bringBackToMemory(){
+		this.setFlushStatus(FlushStatus.NOTFLUSHED);
+	}
+
+	/**
+	 * Gets the my trie instance.
+	 *
+	 * @return the my trie instance
+	 */
+	public Trie getMyTrieInstance() {
+		return myTrieInstance;
+	}
+
+	/**
+	 * Sets the my trie instance.
+	 *
+	 * @param myTrieInstance the new my trie instance
+	 */
+	public void setMyTrieInstance(Trie myTrieInstance) {
+		this.myTrieInstance = myTrieInstance;
 	}
     
 }

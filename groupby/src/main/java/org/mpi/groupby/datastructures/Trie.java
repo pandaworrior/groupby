@@ -16,9 +16,13 @@
  *******************************************************************************/
 package org.mpi.groupby.datastructures;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mpi.groupby.util.DiskIO;
 import org.mpi.groupby.util.Role;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class Trie to store key and value, served as a cache for all keys and part of values.
  */
@@ -46,7 +50,7 @@ public class Trie {
      * Instantiates a new trie.
      */
     public Trie() {
-        root = new TrieNode('0', Role.ROOT);
+        root = new TrieNode('0', Role.ROOT, null);
         this.setNumOfKeys(0);
         this.setNumOfValues(0);
     }
@@ -70,7 +74,7 @@ public class Trie {
         for(int i = 0; i < key.length() - 1; i++){
             char c = key.charAt(i);
             if(curr.getChild(c) == null){
-                curr.setChild(c, new TrieNode(c, Role.INTERNAL));
+                curr.setChild(c, new TrieNode(c, Role.INTERNAL, null));
             }
             curr = curr.getChild(c);
         }
@@ -79,7 +83,7 @@ public class Trie {
         char lastChar = key.charAt(key.length() - 1);
         TrieNode leafNode = curr.getChild(lastChar);
         if(leafNode == null){
-        	leafNode = new TrieNode(lastChar, Role.LEAF);
+        	leafNode = new TrieNode(lastChar, Role.LEAF, this);
         	leafNode.setKeyStr(key);
         	curr.setChild(lastChar, leafNode);
         	
@@ -97,34 +101,63 @@ public class Trie {
         leafNode.addValueStr(value);
         numOfValues++;
         
-        if(numOfValues == DiskIO.BATCH_SIZE_TRIGGER_MEM_CHECK){
+        this.flushToDisk();
+    }
+    
+    /**
+     * Flush to disk if the number of values we insert reach
+     * the batch size to trigger the flush.
+     */
+    public void flushToDisk(){
+    	if(numOfValues == DiskIO.BATCH_SIZE_TRIGGER_MEM_CHECK){
         	if(DiskIO.isTimeToFlush()){
         		//flush into disk
         		if(this.lastNodeFlushed == null){
         			this.lastNodeFlushed = this.startOfIterator;
         		}
         		
-        		DiskIO.flushToDisk(this.lastNodeFlushed, computeNumKeyToFlush(this.lastNodeFlushed, numOfValues));
+        		DiskIO.flushToDisk(computeKeysToFlush(this.lastNodeFlushed, numOfValues));
         	}
         	numOfValues = 0;
         }
     }
     
+
     /**
-     * Compute num key to flush.
+     * Compute the list of keys to flush. 
+     * Iterate the key leaf nodes from start, sum up the value list size
+     * of all scanned leaf nodes, terminate when the sum equal to or larger than
+     * the numOfValues value strings we want to flush. If reaching the leaf node
+     * whose next is null, then we continue to scan from the beginning.
      *
      * @param start the start
      * @param numOfValues the num of values
-     * @return the int
+     * @return the list
      */
-    private int computeNumKeyToFlush(TrieNode start, int numOfValues){
-    	int numOfKey = 0;
+    private List<TrieNode> computeKeysToFlush(TrieNode start, int numOfValues){
+    	List<TrieNode> leafNodesTobeFlushed = new ArrayList<TrieNode>();
     	TrieNode curr = start;
-    	while(numOfValues > 0){
-    		numOfValues -= curr.getNumOfValues();
-    		numOfKey++;
+    	int numOfKeyVisited = 0;
+    	//avoid infinite loop if we don't stop when we iterate all keys
+    	while(numOfValues >= 0 && numOfKeyVisited < this.getNumOfKeys()){
+    		if(curr == null){
+    			curr = this.getStartOfIterator();
+    		}
+    		if(curr.notFlushed()){
+    			numOfValues -= curr.getNumOfValues();
+    			curr.waitForFlushing();
+    			leafNodesTobeFlushed.add(curr);
+    		}
+    		curr = curr.getNextTrieNode();
     	}
-    	return numOfKey;
+    	
+    	if(leafNodesTobeFlushed.isEmpty()){
+    		throw new RuntimeException("No nodes to be flushed");
+    	}
+    	
+    	//set the last on the list as the start point for next round of flushing
+    	this.setLastNodeFlushed(leafNodesTobeFlushed.get(leafNodesTobeFlushed.size() - 1));
+    	return leafNodesTobeFlushed;
     }
 
     // Returns if the key is in the trie.
@@ -222,7 +255,21 @@ public class Trie {
 		this.lastNodeFlushed = lastNodeFlushed;
 	}
 	
+	/**
+	 * Iterator.
+	 *
+	 * @return the trie iterator
+	 */
 	public TrieIterator iterator(){
 		return new TrieIterator(this);
+	}
+	
+	/**
+	 * Increment num of values.
+	 *
+	 * @param numOfV the num of v
+	 */
+	public void incrementNumOfValues(int numOfV){
+		this.numOfValues += numOfV;
 	}
 }

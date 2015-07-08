@@ -1,7 +1,7 @@
 Please read this file by running the program. This file
 is organized in following parts:
 
-a) Code structure explanation is divided into two parts: 
+a) Code structure and algorithm explanation is divided into two parts: 
    * srcdir/CodeStructure.txt
    * Comments inside each class
 
@@ -29,12 +29,18 @@ d) Unit Test
 cd srcdir; // the dir where src/ bin/ conf/ located
 maven test
 
-e) Compile
+e) Compliation and execution dependencies
+-> Java 1.8.0_05
+-> Apache Maven 3.3.3
+
+f) Compile
 cd srcdir; // the dir where src/ bin/ conf/ located
 maven compile
 maven install
 
-f) Run with parameters
+Note: if you want to disable the debug output, please change the org.mpi.groupby.util.Debug.debug to false
+
+g) Run with parameters
 cd srcdir/target; // where the big jar file is located
 java -cp ./groupby-1.0-SNAPSHOT.jar org.mpi.groupby.GroupByFactory ../testdata/dataFile.txt ../conf/config.xml
 This command will output all keys and for each key a list of its value strings

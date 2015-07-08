@@ -1,6 +1,52 @@
 Goal: Take a list of key and value pairs, group all value strings with the same key
 <<k1,v1>, <k2, v2>, ...> ==> <<k1, <v1, v3>> , ...>
 
+High-level design:
+  * We choose to use Trie, in which every leaf node represents a pair of a key string,
+    and a list of value strings pointed by that key.
+  * We ask programmer to specify the maximal percentage of memory the groupby program
+    can consume. This is done by setting the parameter "maxPerMemUsage" in a config file.
+    A value 0.8 implies that flushing data to disk will start if the memory usage is over or equal to 80 percent of the
+    maximal memory JVM can provide to this program.
+    The percentage of memory usage is computed by the following formula:
+    memUsage = (totalMem - freeMem)/maxMem, where totalMem is the current heap size, freeMem is the amount
+    of free memory in the current heap, and maxMem is the maximal amount of memory this program is allowed to have.
+  * When to trigger the flushing disk activity?
+  	We asked programmer to specify when to check memory consumption, i.e., after processing
+  	how many <key, value> pairs insertion. This is done by setting a parameter "batchSizeTriggerMemCheck".
+  	A value 1000 implies that we check whether the memory limit reaches upon every 1000 <key, value> insertions.
+  * What to flush?
+    We will not flush keys from memory, instead, we flush the value string list for a certain number of keys.
+  * How to identify a set of keys, whose value list will be flushed?
+  	In Trie, all leaf nodes are connected like a list. This design is for enabling an efficient iterator right after
+  	the Trie creation. In addition, we keep two cursors, startOfIterator and lastNodeFlushed. *startOfIterator* 
+  	records the first leaf node, and *lastNodeFlushed* records the last leaf node, whose value list has been flushed to disk.
+  	We scan from the next leaf node of *lastNodeFlushed* until the leaf node *p*, when the sum of their value list size
+  	meet *batchSizeTriggerMemCheck*. The list of leaf nodes ranging between *lastNodeFlushed* and *p* are the
+  	flushing candidates.
+  * Where to store data?
+  	We will create files for storing value strings with a prefix "valueFilePrefix" and a sequencer under a
+  	directory "valueFileDirStr".
+  	Each file will have the same size, which is specified by "maxSizePerFile". A value 64 means that each file
+  	cannot be more than 64 MB.
+  	Each leaf node being flushed will store the corresponding file path and a offset, which indicates where to
+  	start to read.
+  	Note: we don't support the value list of a key spanning two files.
+  * How to flush?
+  	We use "UTF-8" to encode a string to a byte string. Since we assume all strings are in ASCII and lowercase,
+  	the encoding of a string will return a byte string within the same size.
+  	For every key node being flushed, we create a byte array buffer, whose size is pre-computed. Then, we iterate
+  	the value list of that key, copy the byte encoding representation of each value string to right place.
+  	At the end, we write the whole byte array at once.
+  * How to read it back?
+  	When we iterate the whole Trie later, we may experience that some leaf nodes have been flushed out. Therefore,
+  	we have to bring them back. Reading data back is easy, since we know how many bytes that each value string
+  	occupy. We read a leaf node, fetch the file path and the offset of this file. Then, we read data and recover
+  	the value list.
+  * How to avoid hitting memory limit while reloading?
+  	We count the reloaded values as new inserted one. Before every reloading, we trigger the memory consumption
+  	check. If the memory limit hits, we do flush as we described before.
+
 ./testdata: it contains a small data file for testing
 
 ./conf: it contains a configuration file, which specifies how to swap data to disk if memory reaches the limit

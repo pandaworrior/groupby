@@ -36,6 +36,7 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.mpi.groupby.datastructures.TrieNode;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class DiskIO is used to flush memory objects into a file, and read from a file
  * to recover the in-memory object.
@@ -109,6 +110,9 @@ public class DiskIO {
 	
 	/** The current file object whose space is not used up. */
 	private static FileUtil currentFile;
+	
+	/** The num of values reloaded from disk. */
+	private static int numOfValuesReloadedFromDisk = 0;
 	
 	/**
 	 * Sets the up by reading file.
@@ -240,8 +244,10 @@ public class DiskIO {
 	 */
 	public static boolean isTimeToFlush(){
 		long freeMem = Runtime.getRuntime().freeMemory();
-		double memUsage = ((MAX_MEMORY_ASSIGNED - freeMem)*1.0)/MAX_MEMORY_ASSIGNED;
-		return (memUsage > MAX_PER_MEMORY_USAGE);
+		long totalMem = Runtime.getRuntime().totalMemory();
+		long usedMem = totalMem - freeMem;
+		double memUsage = (usedMem*1.0)/MAX_MEMORY_ASSIGNED;
+		return (memUsage >= MAX_PER_MEMORY_USAGE);
 	}
 	
 	/**
@@ -279,28 +285,27 @@ public class DiskIO {
 	 * Flush to disk. Since our value string is lowercase, if we use UTF-8,
 	 * then a character will only occupy a single byte. Therefore, we will know
 	 * the size of the byte array of a string.
+	 * After writing to disk, we empty the value list of each key leaf node.
 	 *
-	 * @param start the start
-	 * @param size the size
+	 * @param listOfNodesBeFlushed the list of nodes be flushed
 	 */
-	public static void flushToDisk(TrieNode start, int size){
+	public static void flushToDisk(List<TrieNode> listOfNodesBeFlushed){
+		if(listOfNodesBeFlushed == null || listOfNodesBeFlushed.isEmpty()){
+			throw new RuntimeException("No nodes to be flushed, please check");
+		}
+		
 		FileUtil fileDescriptor = getPositionToWrite(false);
-		TrieNode curr = start;
-		while(true){
-			if(size == 0){
-				break;
-			}
+		for(TrieNode curr : listOfNodesBeFlushed){
+			//if the current file doesn't have enough space, we create another one
 			if(!fileDescriptor.isEnoughSpace(curr.getNumOfValues())){
 				fileDescriptor.close();//close the previous file descriptor
 				fileDescriptor = getPositionToWrite(true);
-			}else{
-				curr.setDataFileName(fileDescriptor.getfDescriptor().getName());
-				curr.setOffsetInDFile(fileDescriptor.getOffset());
-				fileDescriptor.writeToDisk(getByteStr(curr), curr.getNumOfValues());
-				curr.cleanUpValueList();
-				size--;
-				curr = curr.getNextTrieNode();
 			}
+			curr.setDataFileName(fileDescriptor.getfDescriptor().getName());
+			curr.setOffsetInDFile(fileDescriptor.getOffset());
+			fileDescriptor.writeToDisk(getByteStr(curr), curr.getNumOfValues());
+			curr.cleanUpValueList();
+			curr.setToBeFlushed();
 		}
 	}
 	
@@ -310,6 +315,9 @@ public class DiskIO {
 	 * @param tN the t n
 	 */
 	public static void reloadFromDisk(TrieNode tN){
+		//first check if we need to free memory since reload will consume memory
+		tN.getMyTrieInstance().incrementNumOfValues(tN.getNumOfValues());
+		tN.getMyTrieInstance().flushToDisk();
 		try {
 			RandomAccessFile raf = new RandomAccessFile(tN.getDataFileName(), "r");
 			byte[] byteStr = new byte[tN.getNumOfValues() * LEN_OF_VALUE];
