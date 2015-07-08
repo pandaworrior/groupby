@@ -12,5 +12,5 @@
 	<output valueFileDirStr="/var/tmp" valueFilePrefix="value_" maxSizePerFile="2"/>
 	<!-- mem restricts the memory behaviors, namely the point where we check memory suage and where we 
 	start to flush data to disk for getting more space-->
-	<mem maxPerMemUsage="0.8" batchSizeTriggerMemCheck="1000"/>
+	<mem maxPerMemUsage="0.5" batchSizeTriggerMemCheck="1000"/>
 </SETTING>

@@ -1,8 +1,10 @@
 package org.mpi.groupby.datastructures;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.mpi.groupby.util.DiskIO;
 
 public class TrieTest{
 
@@ -58,5 +60,27 @@ public class TrieTest{
 		tR.insert(key, value2);
 		Assert.assertEquals(tR.getNumOfKeys(), 1);
 		Assert.assertEquals(tR.getNumOfValues(), 2);
+	}
+	
+	@Test
+	@Category(org.mpi.groupby.datastructures.Trie.class)
+	public void testIterator(){
+		Trie tR = new Trie();
+		
+		for(int i = 0; i < 100; i++){
+			String keyStr = RandomStringUtils.randomAlphabetic(10).toLowerCase();
+			String valueStr = RandomStringUtils.randomAlphabetic(20).toLowerCase();
+			
+			tR.insert(keyStr, valueStr);
+		}
+		
+		long numOfKeys = tR.getNumOfKeys();
+		long index = 0;
+		TrieIterator it = tR.iterator();
+		while(it.hasNext()){
+			index++;
+			it.next();
+		}
+		Assert.assertEquals(numOfKeys, index);
 	}
 }

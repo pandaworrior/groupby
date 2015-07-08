@@ -23,9 +23,11 @@ import org.mpi.groupby.util.DiskIO;
 import org.mpi.groupby.util.FlushStatus;
 import org.mpi.groupby.util.Role;
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class TrieNode.
+ * The Class TrieNode for two use cases: a) It serves
+ * as an internal node for searching a key; and b) It serves
+ * as a leaf node, which stores a pair of a key and a list of values
+ * belonging to this key.
  */
 public class TrieNode {
     

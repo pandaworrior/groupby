@@ -40,9 +40,15 @@ maven install
 
 Note: if you want to disable the debug output, please change the org.mpi.groupby.util.Debug.debug to false
 
+g) Generate test data
+cd srcdir/target
+java -cp ./groupby-1.0-SNAPSHOT.jar:../lib/* org.mpi.groupby.util.TestDataGenerator ../conf/config.xml 50
+
+Note: this will generate a file named testData.txt under the same directory within roughly 50 mb size
+
 g) Run with parameters
 cd srcdir/target; // where the big jar file is located
-java -cp ./groupby-1.0-SNAPSHOT.jar org.mpi.groupby.GroupByFactory ../testdata/dataFile.txt ../conf/config.xml
+java -cp ./groupby-1.0-SNAPSHOT.jar org.mpi.groupby.GroupByFactory dataFile.txt ../conf/config.xml
 This command will output all keys and for each key a list of its value strings
 
 

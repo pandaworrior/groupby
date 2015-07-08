@@ -310,18 +310,19 @@ public class DiskIO {
 	}
 	
 	/**
-	 * Reload from disk.
+	 * Reload from disk. If the memory list hits, then we flush the data to disk.
 	 *
-	 * @param tN the t n
+	 * @param tN the TrieNode, which we want to reload its value list
 	 */
 	public static void reloadFromDisk(TrieNode tN){
 		//first check if we need to free memory since reload will consume memory
 		tN.getMyTrieInstance().incrementNumOfValues(tN.getNumOfValues());
 		tN.getMyTrieInstance().flushToDisk();
 		try {
-			RandomAccessFile raf = new RandomAccessFile(tN.getDataFileName(), "r");
+			RandomAccessFile raf = new RandomAccessFile(VALUE_FILE_DIR + "/" + tN.getDataFileName(), "r");
 			byte[] byteStr = new byte[tN.getNumOfValues() * LEN_OF_VALUE];
-			int resultLen = raf.read(byteStr, tN.getOffsetInDFile(), byteStr.length);
+			raf.seek((long) tN.getOffsetInDFile());
+			int resultLen = raf.read(byteStr, 0, byteStr.length);
 			
 			if(resultLen != byteStr.length){
 				raf.close();
@@ -343,6 +344,24 @@ public class DiskIO {
 			System.exit(RuntimeError.FILERANDOMREADERROR);
 		}
 		
+	}
+
+	/**
+	 * Gets the len of key.
+	 *
+	 * @return the len of key
+	 */
+	public static int getLEN_OF_KEY() {
+		return LEN_OF_KEY;
+	}
+
+	/**
+	 * Gets the len of value.
+	 *
+	 * @return the len of value
+	 */
+	public static int getLEN_OF_VALUE() {
+		return LEN_OF_VALUE;
 	}
 	
 }

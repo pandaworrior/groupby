@@ -26,7 +26,7 @@ import org.mpi.groupby.util.DiskIO;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class TrieIterator.
+ * The Class TrieIterator for iterating the trie leaf nodes.
  */
 public class TrieIterator implements Iterator<Map.Entry<String, List<String>>>{
 	
@@ -66,7 +66,7 @@ public class TrieIterator implements Iterator<Map.Entry<String, List<String>>>{
 
 	/**
 	 * Next. If the value of this node is flushed to disk, we need
-	 * to recover
+	 * to recover the value list from disk.
 	 *
 	 * @return the trie
 	 */
@@ -130,18 +130,38 @@ public class TrieIterator implements Iterator<Map.Entry<String, List<String>>>{
 		this.indexOfKey = indexOfKey;
 	}
 
+	/**
+	 * Gets the start node.
+	 *
+	 * @return the start node
+	 */
 	public TrieNode getStartNode() {
 		return startNode;
 	}
 
+	/**
+	 * Sets the start node.
+	 *
+	 * @param startNode the new start node
+	 */
 	public void setStartNode(TrieNode startNode) {
 		this.startNode = startNode;
 	}
 
+	/**
+	 * Gets the curr node.
+	 *
+	 * @return the curr node
+	 */
 	public TrieNode getCurrNode() {
 		return currNode;
 	}
 
+	/**
+	 * Sets the curr node.
+	 *
+	 * @param currNode the new curr node
+	 */
 	public void setCurrNode(TrieNode currNode) {
 		this.currNode = currNode;
 	}

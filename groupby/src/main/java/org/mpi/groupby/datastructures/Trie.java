@@ -19,10 +19,10 @@ package org.mpi.groupby.datastructures;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mpi.groupby.util.Debug;
 import org.mpi.groupby.util.DiskIO;
 import org.mpi.groupby.util.Role;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class Trie to store key and value, served as a cache for all keys and part of values.
  */
@@ -43,8 +43,11 @@ public class Trie {
 	/** The num of keys. */
 	private long numOfKeys;
 	
-	/** The num of values. */
+	/** The num of values since last flushing. */
 	private int numOfValues;
+	
+	/** The num of inserts. */
+	private long numOfInserts;
 
     /**
      * Instantiates a new trie.
@@ -100,8 +103,18 @@ public class Trie {
         }
         leafNode.addValueStr(value);
         numOfValues++;
-        
+        numOfInserts++;
+        this.statusOutput();
         this.flushToDisk();
+    }
+    
+    /**
+     * Status output.
+     */
+    private void statusOutput(){
+    	if(numOfInserts % 10000 == 0){
+    		Debug.printf("Current already inserted %d\n", this.numOfInserts);
+    	}
     }
     
     /**

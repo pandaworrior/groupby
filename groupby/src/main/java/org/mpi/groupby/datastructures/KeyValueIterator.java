@@ -29,7 +29,7 @@ import java.util.function.Consumer;
 import org.mpi.groupby.util.RuntimeError;
 
 /**
- * The Class KeyValueIterator.
+ * The Class KeyValueIterator to stream a file into the memory.
  */
 public class KeyValueIterator implements Iterator<Map.Entry<String, String>>{
 	

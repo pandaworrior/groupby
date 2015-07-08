@@ -50,6 +50,7 @@ public class GroupByFactory {
 				Map.Entry<String, String> entry = (Map.Entry<String, String>)kvIter.next();
 				tR.insert(entry.getKey(), entry.getValue());
 			}
+			Debug.println("-------------->End of Insertion<--------\n");
 			return tR.iterator();
 		}
 	}
@@ -62,6 +63,7 @@ public class GroupByFactory {
 	public static void printOutTest(TrieIterator tIter){
 		if(tIter != null){
 			int index = 0;
+			Debug.println("-------------->start of iteration<--------\n");
 			while(tIter.hasNext() && index < NUM_FOR_PRINT_TEST){
 				Map.Entry<String, List<String>> entry = (Map.Entry<String, List<String>>)tIter.next();
 				System.out.println("Key: " + entry.getKey() + "\n");
@@ -70,6 +72,7 @@ public class GroupByFactory {
 				}
 				index++;
 			}
+			Debug.println("-------------->end of iteration<--------\n");
 		}
 		
 	}
