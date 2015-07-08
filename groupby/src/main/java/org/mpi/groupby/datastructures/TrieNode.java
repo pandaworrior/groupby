@@ -191,6 +191,9 @@ public class TrieNode {
 	 * @param value the value
 	 */
 	public void addValueStr(String value){
+		if(!this.isLeaf){
+			throw new RuntimeException("Not leaf node");
+		}
 		if(this.getValueList() == null){
 			this.valueList = new ArrayList<String>();
 		}
@@ -305,6 +308,9 @@ public class TrieNode {
 	 * @param keyStr the new key str
 	 */
 	public void setKeyStr(String keyStr) {
+		if(!this.isLeaf){
+			throw new RuntimeException("Not leaf node");
+		}
 		this.keyStr = keyStr;
 	}
     

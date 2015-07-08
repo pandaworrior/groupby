@@ -34,7 +34,6 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
-import org.mpi.groupby.datastructures.FileUtil;
 import org.mpi.groupby.datastructures.TrieNode;
 
 /**

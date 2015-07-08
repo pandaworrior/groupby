@@ -1,7 +1,11 @@
 Please read this file by running the program. This file
 is organized in three parts:
 
-a) Input assumptions
+a) Code structure explanation is divided into two parts: 
+   * srcdir/CodeStructure.txt
+   * Comments inside each class
+
+b) Input assumptions
 -> An input data file must follow the below format
 aaaaaa bbbbbb
 cccccc dddddd
@@ -17,10 +21,22 @@ the same length as well.
 that the size of all keys is smaller than the memory size. Thus,
 we can cache all keys in the memory.
 
-b) Output assumption:
+c) Output assumption:
 In the output, we allow duplicated values for a key, and we will
 not sort value strings.
 
-c) Compile
+d) Unit Test
+cd srcdir; // the dir where src/ bin/ conf/ located
+maven test
 
-d) Run with parameters
+e) Compile
+cd srcdir; // the dir where src/ bin/ conf/ located
+maven compile
+maven install
+
+f) Run with parameters
+cd srcdir/target; // where the big jar file is located
+java -cp ./groupby-1.0-SNAPSHOT.jar org.mpi.groupby.GroupByFactory ../testdata/dataFile.txt ../conf/config.xml
+This command will output all keys and for each key a list of its value strings
+
+

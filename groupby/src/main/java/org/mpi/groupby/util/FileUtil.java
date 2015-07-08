@@ -15,7 +15,7 @@
  *     chengli@mpi-sws.org    
  *******************************************************************************/
 
-package org.mpi.groupby.datastructures;
+package org.mpi.groupby.util;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -23,7 +23,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import org.mpi.groupby.util.RuntimeError;
 
 /**
  * The Class FileUtil.

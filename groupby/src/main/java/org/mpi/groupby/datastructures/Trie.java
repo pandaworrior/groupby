@@ -53,7 +53,14 @@ public class Trie {
 
     // Inserts a key, pair into the trie.
     /**
-     * Insert.
+     * Insert a key and value pair. If key is not set, then
+     * create a leaf node. If the number of leaf node we processed
+     * over a limit (DiskIO.BATCH_SIZE_TRIGGER_MEM_CHECK), we read
+     * the current memory usage, if the free memory is very little,
+     * then we decide to flush some data to disk. In particular,
+     * we flush the value lists for a range of keys to disk, and clear
+     * all these value lists in memory. Like this, the trie instance more
+     * likes a cache for keys.
      *
      * @param key the key
      * @param value the value

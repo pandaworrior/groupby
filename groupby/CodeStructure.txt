@@ -1,0 +1,31 @@
+Goal: Take a list of key and value pairs, group all value strings with the same key
+<<k1,v1>, <k2, v2>, ...> ==> <<k1, <v1, v3>> , ...>
+
+./testdata: it contains a small data file for testing
+
+./conf: it contains a configuration file, which specifies how to swap data to disk if memory reaches the limit
+
+./src/main/java: it contains the main source code
+  ./src/main/java/org/mpi/groupby:
+	* GroupByFactory: the main function
+  ./src/main/java/org/mpi/groupby/util: 
+    * It contains common functions that are consumed by the various code places
+ 	* DiskIO class handles disk access when the amount of free memory is below a threshold, 
+ 	  which is specified in config.xml
+  
+  ./src/main/java/org/mpi/groupby/datastructures:
+ 	* Trie and TrieNode are the core to implement a prefix tree to store the key and value pairs.
+   		* Why prefix tree? It avoids the re-hash problem when using hashmap and the collision rate is high
+   		* All leaf notes in the prefix tree contain the real data, while the intermediate node contains the 
+   		  searching information
+   		* Search time and insertion time is constant, since each key will follow a path from the root to a 
+   		  leaf and every path has the same length
+ 	* TrieIterator implements an iterator for a Trie instance
+   		* It returns a pair of a key string and a list of its value strings.
+   		* A trick to efficiently iterator all pairs, we added an extra field in TrieNode to make all leaf nodes
+   		  are connected. The first leaf node that was inserted will be the starting point of the iteration
+    * KeyValueIterator implements an iterator for a file instance
+        * It streams a file into memory and return a pair of a key string and a value string each time.
+
+
+
